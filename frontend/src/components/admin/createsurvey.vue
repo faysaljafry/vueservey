@@ -2,19 +2,21 @@
   <div>
     <admin-nav></admin-nav>
     <h1 class="text-3xl text-red-800">Fill The Survey Information</h1>
-    <div class="flex flex-row">
+    <div class="flex flex-row gap-5 p-5">
       <input
         type="text"
+        v-model="title"
         name="surveyTitle"
         id="surveyTitle"
-        class="h-11 w-1/2 ml-10 mt-10 border-2 rounded-lg"
+        class="h-11 w-1/2 p-5 mt-10 border-2 rounded-lg"
         placeholder=" Enter the Title of Survey"
       />
       <input
         type="text"
+        v-model="description"
         name="surveyDescription"
         id="surveyDescription"
-        class="h-11 w-1/2 ml-10 mt-10 border-2 rounded-lg"
+        class="h-11 w-1/2 p-5 mt-10 border-2 rounded-lg"
         placeholder=" Enter a little description of Survey"
       />
     </div>
@@ -24,7 +26,7 @@
       <input
         v-model="data.question"
         type="text"
-        class="h-11 ml-10 w-3/4 border-2 rounded-lg mt-5"
+        class="h-11 w-3/4 border-2 rounded-lg"
         placeholder="A question usually ends with a question mark"
       />
       <button
@@ -33,13 +35,15 @@
       >
         Add Answers
       </button>
-      <div v-for="(answer, Index) in answers[index]" :key="Index">
-        <input
-          v-model="answer.option"
-          type="text"
-          class="h-11 ml-10 w-1/4 border-2 rounded-lg mt-5"
-          placeholder="Enter your answer"
-        />
+      <div class="grid grid-cols-1 md:grid-cols-3 ml-5 w-3/4 gap-3">
+        <div v-for="(answer, Index) in answers[index]" :key="Index">
+          <input
+            v-model="answer.option"
+            type="text"
+            class="h-11 w-full border-2 rounded-lg m-10 p-3"
+            placeholder="Enter your answer"
+          />
+        </div>
       </div>
     </div>
     <button
@@ -60,11 +64,15 @@
 <script>
 import router from '../../router/index';
 import adminNav from './adminnav.vue';
+require('dotenv').config();
 export default {
   data() {
     return {
+      title: '',
+      description: '',
       questions: [{ question: '' }],
       answers: [[{ option: '' }]],
+      url: 'http://localhost:3000',
     };
   },
   components: {
@@ -95,14 +103,17 @@ export default {
         console.log('*****************************');
         console.log(this.answers);
       }
-      fetch('/saveform', {
+      fetch(`${this.url}/saveform`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           questions: this.questions,
-          // password: this.formdata.password,
+          answers: this.answers,
+          title: this.title,
+          description: this.description,
+          activated: true,
         }),
       }).then((res) => {
         if (res.status == '200') {

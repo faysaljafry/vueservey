@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     async signIn() {
-      fetch('/login', {
+      fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,6 +59,9 @@ export default {
         }),
       }).then((res) => {
         if (res.status == '200') {
+          console.log(res);
+          window.localStorage.setItem('user', res);
+          window.localStorage.setItem('token', res.token);
           router.push('/admin/dashboard');
         }
       });

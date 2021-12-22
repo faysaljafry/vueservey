@@ -36,19 +36,19 @@ app.use(cors(corsOptions)); // Use this after the variable declaration
 //Adding following code to App.js will enable the system to serve on
 //Static Ports. This will help heroku to serve pages easily
 
-app.use(express.static(path.join(__dirname, './dist')));
+// app.use(express.static(path.join(__dirname, './dist')));
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, './dist', 'index.html'));
-});
+// app.get('/*', (req, res) => {
+//   res.sendFile(path.join(__dirname, './dist', 'index.html'));
+// });
 // routes
 app.get('/', (req, res) => {
   res.send('Express Server for Survey Application');
 });
 //Route for Admin Login
-app.post('/login?', (req, res) => {
+app.post('/login', (req, res) => {
   const EMAIL = 'faysaljafry@gmail.com';
-  const PASSWORD = '12345';
+  const PASSWORD = '123456';
   console.log('The Body is', req.body);
   const { email, password } = req.body;
   if (email === EMAIL && password === PASSWORD) {
@@ -64,16 +64,34 @@ app.post('/login?', (req, res) => {
       user,
     });
   } else {
-    res.status(404);
+    res.status(403);
     res.json({
       message: 'Wrong Login Information',
     });
   }
 });
+app.get('/getForms', (req, res) => {
+  console.log('In the get Forms Function');
+  const collection = client.db('CubeSurvey').collection('Forms');
+  collection.find().toArray(function (err, results) {
+    if (err) {
+      console.log(err);
+      res.send('403');
+      return;
+    }
+    res.send(results);
+  });
+});
 app.post('/saveform', (req, res) => {
-  const questions_collection = client.db('CubeSurvey').collection('questions');
-  questions_collection.insertOne(
-    { title: req.body.questions },
+  const collection = client.db('CubeSurvey').collection('Forms');
+  collection.insertOne(
+    req.body,
+    // {
+    //   title: req.body.title,
+    //   description: req.body.description,
+    //   questions: req.body.description,
+    //   answers: req.body.answers,
+    // },
     function (err, result) {
       if (err) {
         console.log(err);
