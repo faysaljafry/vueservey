@@ -5,7 +5,7 @@
     <div class="flex flex-row gap-5 p-5">
       <input
         type="text"
-        v-model="title"
+        v-model="editabledata.title"
         name="surveyTitle"
         id="surveyTitle"
         class="h-11 w-1/2 p-5 mt-10 border-2 rounded-lg"
@@ -13,7 +13,7 @@
       />
       <input
         type="text"
-        v-model="description"
+        v-model="editabledata.description"
         name="surveyDescription"
         id="surveyDescription"
         class="h-11 w-1/2 p-5 mt-10 border-2 rounded-lg"
@@ -22,7 +22,7 @@
     </div>
 
     <h1 class="text-3xl mt-4">Add Questions</h1>
-    <div v-for="(data, index) in questions" :key="index">
+    <div v-for="(data, index) in editabledata.questions" :key="index">
       <input
         v-model="data.question"
         type="text"
@@ -36,7 +36,10 @@
         Add Answers
       </button>
       <div class="grid grid-cols-1 md:grid-cols-3 ml-5 w-3/4 gap-3">
-        <div v-for="(answer, Index) in answers[index]" :key="Index">
+        <div
+          v-for="(answer, Index) in editabledata.answers[index]"
+          :key="Index"
+        >
           <input
             v-model="answer.option"
             type="text"
@@ -64,16 +67,13 @@
 <script>
 import router from '../../router/index';
 import adminNav from './adminnav.vue';
+import service from '../../services/service';
 require('dotenv').config();
 export default {
   data() {
     return {
-      title: '',
-      description: '',
-      questions: [{ question: '' }],
-      answers: [[{ option: '' }]],
-      // url: 'http://localhost:3000',
-      url: 'https://vuesurvey.herokuapp.com/',
+      editabledata: {},
+      url: 'http://localhost:3000',
     };
   },
   components: {
@@ -83,13 +83,15 @@ export default {
   beforeMount() {
     if (!localStorage.getItem('user')) {
       router.push('/admin/login');
+    } else {
+      this.editabledata = this.$store.getters.getForTOEdit;
     }
   },
   methods: {
     addAnswers(index) {
-      console.log(this.answers);
+      console.log(this.editabledata);
       //   console.log('The answer Function');
-      this.answers[index].push({
+      this.editabledata.answers[index].push({
         option: '',
       });
     },
@@ -102,36 +104,11 @@ export default {
     },
     async saveForm() {
       console.log('Form Saved');
-      this.$store.commit('saveNewSurvey', {
-        questins: this.questions,
-        answers: this.answers,
-        title: this.title,
-        description: this.description,
-        activated: true,
-      });
-      fetch(`${this.url}/saveform`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          questions: this.questions,
-          answers: this.answers,
-          title: this.title,
-          description: this.description,
-          activated: true,
-        }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          // let data = JSON.parse(res);
-          let data = res;
-          console.log('inserted id is', data.insertedId);
-          console.log('res', data);
-          if (res.status == '200') {
-            router.push('/admin/dashboard');
-          }
-        });
+      console.log(this.editabledata);
+      this.$store.commit('updateSurvey', this.editabledata);
+      const response = await service.updateSurvey(this.editabledata);
+      console.log(response);
+      router.push('/admin/dashboard');
     },
   },
 };

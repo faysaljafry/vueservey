@@ -112,9 +112,14 @@
 </template>
 
 <script>
+// import service from '../../services/service';
+import router from '../../router/index';
 export default {
   methods: {
-    logout() {},
+    logout() {
+      localStorage.removeItem('user');
+      router.push('/admin/login');
+    },
   },
 };
 </script>

@@ -3,7 +3,7 @@ import Home from '../views/Home.vue';
 import adminlogin from '../components/admin/adminlogin.vue';
 import dashboard from '../components/admin/dashboard.vue';
 import createSurvey from '../components/admin/createsurvey.vue';
-
+import editSurvey from '../components/admin/editSurvey.vue';
 const routes = [
   {
     path: '/',
@@ -20,7 +20,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
-    path: '/admin/login',
+    path: '/admin/sigin',
     name: 'dashboard',
     component: adminlogin,
   },
@@ -33,6 +33,11 @@ const routes = [
     path: '/admin/createSurvey',
     name: 'createSurvey',
     component: createSurvey,
+  },
+  {
+    path: '/admin/editSurvey',
+    name: 'editSurvey',
+    component: editSurvey,
   },
 ];
 

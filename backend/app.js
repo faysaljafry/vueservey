@@ -31,16 +31,17 @@ mongoClient.connect((err, db) => {
 // create our express app
 const app = express();
 // middleware
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors(corsOptions)); // Use this after the variable declaration
 //Adding following code to App.js will enable the system to serve on
 //Static Ports. This will help heroku to serve pages easily
 
-// app.use(express.static(path.join(__dirname, './dist')));
+app.use(express.static(path.join(__dirname, './dist')));
 
-// app.get('/*', (req, res) => {
-//   res.sendFile(path.join(__dirname, './dist', 'index.html'));
-// });
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, './dist', 'index.html'));
+});
 // routes
 app.get('/', (req, res) => {
   res.send('Express Server for Survey Application');
@@ -70,6 +71,21 @@ app.post('/login', (req, res) => {
     });
   }
 });
+app.post('/updateSurvey', (req, res) => {
+  console.log('In data Update function');
+  console.log('the id is:' + req.body._id);
+  const SurveyToModify = client.db('CubeSurvey').collection('Forms');
+  let { _id, ...body } = req.body;
+  SurveyToModify.updateOne({ _id }, { $set: body }, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.send('400');
+      return;
+    }
+    res.send(result);
+  });
+});
+
 app.get('/getForms', (req, res) => {
   console.log('In the get Forms Function');
   const collection = client.db('CubeSurvey').collection('Forms');
@@ -83,24 +99,19 @@ app.get('/getForms', (req, res) => {
   });
 });
 app.post('/saveform', (req, res) => {
+  id = new mongo.ObjectId();
+  console.log(id);
   const collection = client.db('CubeSurvey').collection('Forms');
-  collection.insertOne(
-    req.body,
-    // {
-    //   title: req.body.title,
-    //   description: req.body.description,
-    //   questions: req.body.description,
-    //   answers: req.body.answers,
-    // },
-    function (err, result) {
-      if (err) {
-        console.log(err);
-        res.send('400');
-        return;
-      }
-      res.send('Question were added successfully');
+  collection.insertOne({ _id: id, ...req.body }, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.send('400');
+      return;
     }
-  );
+    console.log('result is', result);
+    // res.json(result);
+    res.send(result);
+  });
 });
 const port = process.env.PORT || 3000;
 //start server

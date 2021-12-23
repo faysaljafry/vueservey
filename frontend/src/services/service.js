@@ -3,14 +3,21 @@ export default {
   getForms() {
     return API().get('getForms');
   },
+  updateSurvey(data) {
+    return API()
+      .post('updateSurvey', data)
+      .then(() => {
+        console.log('data was updated successfully!');
+      });
+  },
   login(user) {
     return API()
-      .post(signin, {
-        username: user.username,
+      .post('login', {
+        email: user.email,
         password: user.password,
       })
       .then((response) => {
-        if (response.data.accessToken) {
+        if (response.data.token) {
           localStorage.setItem('user', JSON.stringify(response.data));
         }
         return response.data;
