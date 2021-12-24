@@ -11,6 +11,7 @@
     "@headlessui/vue": "^1.4.2",
     "@heroicons/vue": "^1.0.5",
     "@tailwindcss/postcss7-compat": "^2.2.17",
+    "@themesberg/flowbite": "^1.2.0",
     "@vuelidate/core": "^2.0.0-alpha.32",
     "@vuelidate/validators": "^2.0.0-alpha.25",
     "autoprefixer": "^9",
@@ -23,7 +24,6 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@themesberg/flowbite": "^1.2.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",

@@ -4,6 +4,7 @@
   </div> -->
   <router-view />
 </template>
+<script src="../node_modules/@themesberg/flowbite/dist/flowbite.bundle.js"></script>
 
 <style>
 #app {

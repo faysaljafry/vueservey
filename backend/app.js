@@ -23,7 +23,7 @@ var mongoClient = new MongoClient(uri, {
 });
 mongoClient.connect((err, db) => {
   if (err != null) {
-    console.log(err);
+    //console.log(err);
     return;
   }
   client = db;
@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
   const EMAIL = 'faysaljafry@gmail.com';
   const PASSWORD = '123456';
-  console.log('The Body is', req.body);
+  //console.log('The Body is', req.body);
   const { email, password } = req.body;
   if (email === EMAIL && password === PASSWORD) {
     const user = {
@@ -72,13 +72,13 @@ app.post('/login', (req, res) => {
   }
 });
 app.post('/updateSurvey', (req, res) => {
-  console.log('In data Update function');
-  console.log('the id is:' + req.body._id);
+  //console.log('In data Update function');
+  //console.log('the id is:' + req.body._id);
   const SurveyToModify = client.db('CubeSurvey').collection('Forms');
   let { _id, ...body } = req.body;
   SurveyToModify.updateOne({ _id }, { $set: body }, function (err, result) {
     if (err) {
-      console.log(err);
+      //console.log(err);
       res.send('400');
       return;
     }
@@ -87,11 +87,11 @@ app.post('/updateSurvey', (req, res) => {
 });
 
 app.get('/getForms', (req, res) => {
-  console.log('In the get Forms Function');
+  //console.log('In the get Forms Function');
   const collection = client.db('CubeSurvey').collection('Forms');
   collection.find().toArray(function (err, results) {
     if (err) {
-      console.log(err);
+      //console.log(err);
       res.send('403');
       return;
     }
@@ -100,15 +100,15 @@ app.get('/getForms', (req, res) => {
 });
 app.post('/saveform', (req, res) => {
   id = new mongo.ObjectId();
-  console.log(id);
+  //console.log(id);
   const collection = client.db('CubeSurvey').collection('Forms');
   collection.insertOne({ _id: id, ...req.body }, function (err, result) {
     if (err) {
-      console.log(err);
+      //console.log(err);
       res.send('400');
       return;
     }
-    console.log('result is', result);
+    //console.log('result is', result);
     // res.json(result);
     res.send(result);
   });
@@ -116,5 +116,5 @@ app.post('/saveform', (req, res) => {
 const port = process.env.PORT || 3000;
 //start server
 app.listen(port, () => {
-  console.log(`listeniing at port: ${port}`);
+  //console.log(`listeniing at port: ${port}`);
 });

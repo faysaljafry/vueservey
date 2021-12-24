@@ -7,7 +7,7 @@ export default {
     return API()
       .post('updateSurvey', data)
       .then(() => {
-        console.log('data was updated successfully!');
+        // console.log('data was updated successfully!');
       });
   },
   login(user) {

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import adminlogin from '../components/admin/adminlogin.vue';
-import dashboard from '../components/admin/dashboard.vue';
+import dashboard from '../components/admin/dashboardG.vue';
 import createSurvey from '../components/admin/createsurvey.vue';
 import editSurvey from '../components/admin/editSurvey.vue';
 const routes = [

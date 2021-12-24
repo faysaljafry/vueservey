@@ -97,17 +97,17 @@ export default {
     },
     addQuestion() {
       console.log(this.questions);
-      this.questions.push({
+      this.editabledata.questions.push({
         question: '',
       });
-      this.answers.push([{ option: '' }]);
+      this.editabledata.answers.push([{ option: '' }]);
     },
     async saveForm() {
-      console.log('Form Saved');
-      console.log(this.editabledata);
+      // console.log('Form Saved');
+      // console.log(this.editabledata);
       this.$store.commit('updateSurvey', this.editabledata);
-      const response = await service.updateSurvey(this.editabledata);
-      console.log(response);
+      await service.updateSurvey(this.editabledata);
+      // console.log(response);
       router.push('/admin/dashboard');
     },
   },
