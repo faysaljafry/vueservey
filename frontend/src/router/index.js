@@ -20,7 +20,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
-    path: '/admin/sigin',
+    path: '/admin/login',
     name: 'dashboard',
     component: adminlogin,
   },

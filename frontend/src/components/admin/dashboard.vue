@@ -180,7 +180,7 @@ export default {
     let ckeditor = document.createElement('script');
     ckeditor.setAttribute(
       'src',
-      '//unpkg.com/@themesberg/flowbite@1.2.0/dist/flowbite.bundle.js'
+      '../../../node_modules/@themesberg/flowbite/dist/flowbite.bundle.js'
     );
     document.head.appendChild(ckeditor);
   },

@@ -72,8 +72,8 @@ export default {
       description: '',
       questions: [{ question: '' }],
       answers: [[{ option: '' }]],
-      // url: 'http://localhost:3000',
-      url: 'https://vuesurvey.herokuapp.com/',
+      url: 'http://localhost:3000',
+      // url: 'https://vuesurvey.herokuapp.com/',
     };
   },
   components: {
