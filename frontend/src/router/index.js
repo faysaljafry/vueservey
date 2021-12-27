@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
 import adminlogin from '../components/admin/adminlogin.vue';
 import dashboard from '../components/admin/dashboardG.vue';
 import createSurvey from '../components/admin/createsurvey.vue';
 import editSurvey from '../components/admin/editSurvey.vue';
+import userLogin from '../components/User/Login.vue';
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
+    path: '/login',
+    name: 'userLogin',
+    component: userLogin,
   },
   {
     path: '/about',

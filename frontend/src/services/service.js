@@ -10,9 +10,21 @@ export default {
         // console.log('data was updated successfully!');
       });
   },
-  login(user) {
+  alogin(admin) {
     return API()
-      .post('login', {
+      .post('adminLogin', {
+        email: admin.email,
+        password: admin.password,
+      })
+      .then((response) => {
+        if (response.data.token) {
+          localStorage.setItem('admin', JSON.stringify(response.data));
+        }
+      });
+  },
+  userLogin(user) {
+    return API()
+      .post('userLogin', {
         email: user.email,
         password: user.password,
       })
