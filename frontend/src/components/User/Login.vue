@@ -73,6 +73,7 @@ export default {
   setup() {
     return { v$: useVuelidate() };
   },
+
   validations() {
     return {
       form: {
@@ -94,8 +95,12 @@ export default {
         password: this.form.password,
       });
       if (user.user1.isAuthenticated) {
-        router.push('/admin/dashboard');
+        router.push('/dashboard');
       }
+    },
+    logout() {
+      localStorage.removeItem('user');
+      router.push('/login');
     },
   },
 };

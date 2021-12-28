@@ -6,7 +6,25 @@
       class="h-52 w-52 self-center"
     />
 
-    <form @submit.prevent="signIn" class="flex-col flex">
+    <form @submit.prevent="signUp" class="flex-col flex">
+      <div class="form-group" :class="{ error: v$.form.name.$errors.length }">
+        <input
+          id="name"
+          class="form-control h-16 mb-5 border-2 md:w-96 self-center p-3 rounded"
+          v-model="v$.form.name.$model"
+          @blur="v$.form.name.$touch"
+          for="name"
+          type="text"
+          placeholder="Please Enter your Name"
+        />
+        <div
+          class="input-errors"
+          v-for="(error, index) of v$.form.name.$errors"
+          :key="index"
+        >
+          <div class="error-msg text-xs text-red-600">{{ error.$message }}</div>
+        </div>
+      </div>
       <div class="form-group" :class="{ error: v$.form.email.$errors.length }">
         <input
           id="email"
@@ -64,6 +82,7 @@ export default {
   data() {
     return {
       form: {
+        name: '',
         email: '',
         password: '',
       },
@@ -84,18 +103,21 @@ export default {
           required,
           min: minLength(6),
         },
+        name: {
+          required,
+        },
       },
     };
   },
   methods: {
-    async signIn() {
-      const user = await service.alogin({
+    async signUp() {
+      const user = await service.signUp({
+        name: this.form.name,
         email: this.form.email,
         password: this.form.password,
       });
-      console.log(user.user.isAuthenticated);
-      if (user.user.isAuthenticated) {
-        router.push('/admin/dashboard');
+      if (user) {
+        router.push('/login');
       }
     },
   },

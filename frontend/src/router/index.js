@@ -4,11 +4,18 @@ import dashboard from '../components/admin/dashboardG.vue';
 import createSurvey from '../components/admin/createsurvey.vue';
 import editSurvey from '../components/admin/editSurvey.vue';
 import userLogin from '../components/User/Login.vue';
+import userSignup from '../components/User/register.vue';
+import userDashboard from '../components/User/dashboard.vue';
 const routes = [
   {
     path: '/login',
     name: 'userLogin',
     component: userLogin,
+  },
+  {
+    path: '/signup',
+    name: 'userSignup',
+    component: userSignup,
   },
   {
     path: '/about',
@@ -23,6 +30,11 @@ const routes = [
     path: '/admin/login',
     name: 'dashboard',
     component: adminlogin,
+  },
+  {
+    path: '/dashboard',
+    name: 'userDashboard',
+    component: userDashboard,
   },
   {
     path: '/admin/dashboard',

@@ -42,6 +42,7 @@
         />
         <button
           @click="addAnswers(index)"
+          type="button"
           class="p-4 ml-4 mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
         >
           Add Answers
@@ -59,6 +60,7 @@
       </div>
       <button
         @click="addQuestion(index)"
+        type="button"
         class="p-4 ml-4 mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
       >
         Add another Question

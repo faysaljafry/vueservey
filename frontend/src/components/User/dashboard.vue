@@ -1,6 +1,6 @@
 <template>
   <div>
-    <adminnav></adminnav>
+    <user-nav></user-nav>
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" @close="closeModal">
         <div class="fixed inset-0 z-40 overflow-y-auto">
@@ -62,9 +62,20 @@
                       :key="AnsIndex"
                     >
                       <div v-for="(ans, nextindex) in answer" :key="nextindex">
-                        <li class="text-red-700 text-left">
+                        <!-- <li class="text-red-700 text-left">
                           {{ ans }}
-                        </li>
+                        </li> -->
+                        <input
+                          :id="ans"
+                          v-model="checked[index]"
+                          type="radio"
+                          :value="AnsIndex + 1"
+                          @change="onChange"
+                        />
+                        <label class="p-4" :for="ans">
+                          {{ ans }}
+                          <!-- <span class="p-4" :for="ans">{{ ans }}</span> -->
+                        </label>
                       </div>
                     </div>
                     <hr class="border-2 border-gray-400 rounded my-3" />
@@ -77,7 +88,7 @@
                     class="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                     @click="closeModal"
                   >
-                    Close
+                    Submit
                   </button>
                 </div>
               </div>
@@ -110,9 +121,9 @@
                 data-modal-toggle="default-modal"
                 class="p-4 mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
               >
-                View
+                Fill Survey
               </button>
-              <button
+              <!-- <button
                 @click="editForm(index)"
                 class="p-4 mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
               >
@@ -124,7 +135,7 @@
                 class="p-4 mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
               >
                 De-active
-              </button>
+              </button> -->
               <button
                 v-if="!item.activated"
                 @click="Activate(index)"
@@ -144,9 +155,9 @@
 </template>
 
 <script>
-import adminnav from './adminnav.vue';
-import service from '../../services/service';
 import router from '../../router/index';
+import userNav from './usernav.vue';
+import service from '../../services/service';
 import {
   TransitionRoot,
   TransitionChild,
@@ -154,18 +165,37 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '@headlessui/vue';
-// import '@themesberg/flowbite/';
-// import '@https://unpkg.com/@themesberg/flowbite@1.2.0/dist/flowbite.bundle.js';
-// import '../../../node_modules/@themesberg/flowbite/dist/flowbite.bundle.js';
 export default {
   data() {
     return {
+      checked: [],
       isOpen: false,
-      editIndex: null,
       Formdata: [],
-      modalData: {},
-      FromToEdit: {},
+      filledIndex: null,
+      filledSurvey: [],
     };
+  },
+  beforeMount() {
+    if (!localStorage.getItem('user')) {
+      router.push('/login');
+    }
+    this.Formdata = this.$store.getters.getData;
+    this.getFilledSurveys();
+    // console.log(this.Formdata);
+  },
+  mounted() {
+    this.getForms();
+
+    //this.test1();
+    // console.log(this.Formdata);
+    /**
+     * This is Testing on The difference
+     */
+  },
+  updated() {
+    this.test1();
+    console.log(this.filledSurvey);
+    console.log(this.Formdata);
   },
   components: {
     TransitionRoot,
@@ -173,41 +203,30 @@ export default {
     Dialog,
     DialogOverlay,
     DialogTitle,
-    adminnav,
+    userNav,
   },
-
-  beforeMount() {
-    if (!localStorage.getItem('admin')) {
-      router.push('/admin/login');
-    }
-  },
-  created() {},
-  mounted() {
-    this.getForms();
-  },
-
   methods: {
     openModal(index) {
       // console.log(this.Formdata[index]);
       this.modalData = this.Formdata[index];
+      this.filledIndex = index;
       this.isOpen = true;
     },
     closeModal() {
+      let email = JSON.parse(localStorage.getItem('user')).user1.email;
       this.isOpen = false;
       this.editIndex = null;
-    },
-    editForm(index) {
-      this.FromToEdit = this.Formdata[index];
-      this.$store.commit('setFormToEdit', index);
-      router.push('/admin/editSurvey');
-      // console.log(this.FromToEdit);
-    },
-    deActivate(index) {
-      this.Formdata[index].activated = false;
-      console.log(this.Formdata[index].activated);
-    },
-    Activate(index) {
-      this.Formdata[index].activated = true;
+      console.log(this.checked);
+      let filledForm = {
+        id: this.Formdata[this.filledIndex]._id,
+        filled: true,
+        checked: this.checked,
+        email,
+      };
+      const response = service.saveFeedback(filledForm);
+      this.filledIndex = null;
+      this.filledSurvey.push(filledForm);
+      console.log(response);
     },
     async getForms() {
       if (this.$store.getters.loadedFlag) {
@@ -219,13 +238,28 @@ export default {
         this.$store.commit('setData', this.Formdata);
       }
     },
-    dummy(index) {
-      console.log(this.Formdata[index]);
-      this.modalData = this.Formdata[index];
-      // toggleModal('default-modal');
+    async getFilledSurveys() {
+      let FilledSurvey = await service.getFilledSurveys();
+      this.filledSurvey = FilledSurvey.data;
+      //console.log(FilledSurvey.data[0]);
+    },
+    test1() {
+      console.log('Testing function starts');
+      const isSameUser = (a, b) => a._id === b.id;
+      const onlyInLeft = (left, right, compareFunction) =>
+        left.filter(
+          (leftValue) =>
+            !right.some((rightValue) => compareFunction(leftValue, rightValue))
+        );
+
+      console.log(this.Formdata);
+      const onlyInA = onlyInLeft(this.Formdata, this.filledSurvey, isSameUser);
+      //   const onlyInB = onlyInLeft(this.filledSurvey, this.Formdata, isSameUser);
+
+      //   const result = ];
+      this.Formdata = onlyInA;
+      console.log('Different Function is', JSON.parse(JSON.stringify(onlyInA)));
     },
   },
 };
 </script>
-
-<style></style>

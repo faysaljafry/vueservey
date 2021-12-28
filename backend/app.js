@@ -94,6 +94,22 @@ app.post('/adminLogin', (req, res) => {
     });
   }
 });
+app.post('/StoreFeedback', (req, res) => {
+  const Oid = new mongo.ObjectId(req.body.id);
+  console.log(Oid);
+  const collection = client.collection('feedback');
+  delete req.body.id;
+  collection.insertOne({ id: Oid, ...req.body }, function (err, result) {
+    if (err) {
+      //console.log(err);
+      res.send('400');
+      return;
+    }
+    //console.log('result is', result);
+    // res.json(result);
+    res.send(result);
+  });
+});
 app.post('/userLogin', users.login);
 app.post('/userRegister', users.signup);
 
@@ -124,10 +140,20 @@ app.get('/getForms', (req, res) => {
     res.send(results);
   });
 });
+app.get('/getFilledSurveys', (req, res) => {
+  const filledSurveys = client.collection('feedback');
+  filledSurveys.find().toArray(function (err, results) {
+    if (err) {
+      res.send('403');
+      return;
+    }
+    res.send(results);
+  });
+});
 app.post('/saveform', (req, res) => {
-  id = new mongo.ObjectId();
+  const id = new mongo.ObjectId();
   //console.log(id);
-  const collection = client.db('CubeSurvey').collection('Forms');
+  const collection = client.collection('Forms');
   collection.insertOne({ _id: id, ...req.body }, function (err, result) {
     if (err) {
       //console.log(err);
